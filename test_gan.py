@@ -12,7 +12,7 @@ import torch
 import scipy.io as scio
 from model.gan_structure import GANModel
 from utils.my_functions import load_w2v
-from model.seq2seq_enhanced_visualization import visualize_action_complete
+from model.visualization_original import visualize_action_complete
 import os
 
 
