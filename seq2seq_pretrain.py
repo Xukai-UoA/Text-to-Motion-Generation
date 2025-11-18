@@ -51,8 +51,12 @@ def main():
 
     num_data_train = train_action.shape[0]
 
+    # 自动从数据中推断动作维度
+    dim_action = train_action.shape[1]  # [num_data, dim_action, action_steps]
+
     print(f"训练数据: {num_data_train} 样本")
     print(f"动作形状: {train_action.shape}")
+    print(f"动作维度: {dim_action}维 (HumanML3D)")
     print(f"文本形状: {train_script.shape}")
     print(f"最大句子长度: {sentence_steps}")
 
@@ -76,6 +80,7 @@ def main():
     restore_step = 0
 
     print(f"\n超参数:")
+    print(f"  dim_action: {dim_action} (从数据自动推断)")
     print(f"  dim_sentence: {dim_sentence}")
     print(f"  dim_char_enc: {dim_char_enc}")
     print(f"  dim_gen: {dim_gen}")
@@ -93,7 +98,8 @@ def main():
         dim_sentence=dim_sentence,
         dim_char_enc=dim_char_enc,
         dim_gen=dim_gen,
-        dim_random=dim_random  # 添加dim_random参数
+        dim_action=dim_action,  # 从数据自动推断的动作维度
+        dim_random=dim_random
     )
 
     print(f"模型参数数量: {sum(p.numel() for p in model.parameters()):,}")

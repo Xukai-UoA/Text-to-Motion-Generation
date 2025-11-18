@@ -127,6 +127,11 @@ def main():
     print("加载模型和Word2Vec")
     print("="*70)
 
+    print("\n加载初始pose以推断动作维度...")
+    init_pose = scio.loadmat(mean_pose_path)['mean_vector']
+    dim_action = init_pose.shape[0]  # 从初始pose推断动作维度
+    print(f"动作维度: {dim_action}维 (从mean_pose.mat推断)")
+
     print("\n创建模型结构...")
     model = Seq2SeqModel(
         sentence_steps=sentence_steps,
@@ -134,11 +139,9 @@ def main():
         dim_sentence=dim_sentence,
         dim_char_enc=dim_char_enc,
         dim_gen=dim_gen,
+        dim_action=dim_action,  # 从数据推断的动作维度
         dim_random=dim_random
     )
-
-    print("加载初始pose...")
-    init_pose = scio.loadmat(mean_pose_path)['mean_vector']
 
     print("创建测试器...")
     tester = Seq2SeqTester(
@@ -150,6 +153,7 @@ def main():
         dim_sentence=dim_sentence,
         dim_char_enc=dim_char_enc,
         dim_gen=dim_gen,
+        dim_action=dim_action,
         dim_random=dim_random,
         device=device
     )

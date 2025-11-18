@@ -89,11 +89,11 @@ class Seq2SeqModel(nn.Module):
     注意：不包含action_encoder，因为TF版本中没有
     """
 
-    def __init__(self, sentence_steps, action_steps, dim_sentence, dim_char_enc, dim_gen, dim_random=10):
+    def __init__(self, sentence_steps, action_steps, dim_sentence, dim_char_enc, dim_gen, dim_action=263, dim_random=10):
         super(Seq2SeqModel, self).__init__()
 
         self.action_steps = action_steps
-        self.dim_action = 24
+        self.dim_action = dim_action  # 支持可配置的动作维度，默认263（HumanML3D标准版）
         self.sentence_steps = sentence_steps
         self.dim_sentence = dim_sentence
         self.dim_char_enc = dim_char_enc
@@ -330,15 +330,16 @@ if __name__ == "__main__":
     dim_sentence = 300
     dim_char_enc = 256
     dim_gen = 256
+    dim_action = 263  # HumanML3D标准版维度
     dim_random = 16
 
-    model = Seq2SeqModel(sentence_steps, action_steps, dim_sentence, dim_char_enc, dim_gen, dim_random)
+    model = Seq2SeqModel(sentence_steps, action_steps, dim_sentence, dim_char_enc, dim_gen, dim_action, dim_random)
 
     # 创建测试数据
     script = torch.randn(batch_size, sentence_steps, dim_sentence)
     seq_len = torch.tensor([25, 28, 30, 22])
-    action = torch.randn(batch_size, action_steps, 24)
-    init_action = torch.randn(batch_size, 24)
+    action = torch.randn(batch_size, action_steps, dim_action)
+    init_action = torch.randn(batch_size, dim_action)
     init_char = torch.randn(batch_size, dim_sentence)
     random_c2a = torch.randn(batch_size, sentence_steps, dim_random)
     random_a2c = torch.randn(batch_size, action_steps, dim_random)
@@ -350,7 +351,7 @@ if __name__ == "__main__":
 
     print("\n2. 生成动作...")
     fake_action, action_enc = model.char2action(char_enc, init_action, random_c2a, batch_size)
-    print(f"   Generated action: {fake_action.shape}")  # [4, 32, 24]
+    print(f"   Generated action: {fake_action.shape}")  # [4, 32, 263]
     print(f"   Action features (decoder states): {action_enc.shape}")  # [4, 32, 256]
 
     print("\n3. 重建文本...")

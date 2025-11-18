@@ -18,13 +18,13 @@ class Seq2SeqTester:
 
     def __init__(self, model, init_pose, model_path,
                  sentence_steps, action_steps, dim_sentence,
-                 dim_char_enc, dim_gen, dim_random,
+                 dim_char_enc, dim_gen, dim_action, dim_random,
                  device='cuda'):
         self.device = torch.device(device if torch.cuda.is_available() else 'cpu')
 
         self.model = model.to(self.device)
         self.action_steps = action_steps
-        self.dim_action = 24
+        self.dim_action = dim_action  # 支持可配置的动作维度
         self.num_data = 1  # 测试时batch_size=1
 
         self.init_pose = init_pose
@@ -206,6 +206,12 @@ if __name__ == "__main__":
     mean_pose_path = './data/mean_pose.mat'
     w2v_path = './data/GoogleNews-vectors-negative300.bin'
 
+    # 加载初始pose以推断动作维度
+    print("\n加载初始pose...")
+    init_pose = scio.loadmat(mean_pose_path)['mean_vector']
+    dim_action = init_pose.shape[0]  # 从初始pose推断动作维度
+    print(f"动作维度: {dim_action}维 (从mean_pose.mat推断)")
+
     # ==================== 加载模型 ====================
     print("\n创建模型...")
     model = Seq2SeqModel(
@@ -214,12 +220,9 @@ if __name__ == "__main__":
         dim_sentence=dim_sentence,
         dim_char_enc=dim_char_enc,
         dim_gen=dim_gen,
+        dim_action=dim_action,  # 从数据推断的动作维度
         dim_random=dim_random
     )
-
-    # 加载初始pose
-    print("\n加载初始pose...")
-    init_pose = scio.loadmat(mean_pose_path)['mean_vector']
 
     # 创建测试器
     print("\n创建测试器...")
@@ -232,6 +235,7 @@ if __name__ == "__main__":
         dim_sentence=dim_sentence,
         dim_char_enc=dim_char_enc,
         dim_gen=dim_gen,
+        dim_action=dim_action,
         dim_random=dim_random,
         device=device
     )

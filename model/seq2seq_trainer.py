@@ -155,6 +155,7 @@ if __name__ == "__main__":
     dim_sentence = 300
     dim_char_enc = 256
     dim_gen = 256
+    dim_action = 263  # HumanML3D标准版维度
     dim_random = 16
     batch_size = 32
 
@@ -162,8 +163,8 @@ if __name__ == "__main__":
     num_data = 1000
     train_script = np.random.randn(num_data, dim_sentence, sentence_steps).astype(np.float32)
     train_script_len = np.random.randint(10, sentence_steps, size=(num_data,))
-    train_action = np.random.randn(num_data, 24, action_steps).astype(np.float32)
-    init_pose = np.random.randn(24, 1).astype(np.float32)
+    train_action = np.random.randn(num_data, dim_action, action_steps).astype(np.float32)
+    init_pose = np.random.randn(dim_action, 1).astype(np.float32)
 
     # 创建模型
     model = Seq2SeqModel(
@@ -172,7 +173,8 @@ if __name__ == "__main__":
         dim_sentence=dim_sentence,
         dim_char_enc=dim_char_enc,
         dim_gen=dim_gen,
-        dim_random=dim_random  # 添加dim_random参数
+        dim_action=dim_action,
+        dim_random=dim_random
     )
 
     # 创建训练器
