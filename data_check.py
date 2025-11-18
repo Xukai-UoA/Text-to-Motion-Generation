@@ -23,7 +23,7 @@ import scipy.io as scio
 import os
 import argparse
 from pathlib import Path
-from model.seq2seq_enhanced_visualization import visualize_action_complete
+from model.visualization_original import visualize_action_complete
 import glob
 from tqdm import tqdm
 
