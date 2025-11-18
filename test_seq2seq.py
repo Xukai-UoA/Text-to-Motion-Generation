@@ -12,7 +12,7 @@ import scipy.io as scio
 from model.seq2seq_structure import Seq2SeqModel
 from model.seq2seq_tester import Seq2SeqTester
 from utils.my_functions import load_w2v
-from model.seq2seq_enhanced_visualization import visualize_action_complete
+from model.visualization_original import visualize_action_complete
 import os
 
 
