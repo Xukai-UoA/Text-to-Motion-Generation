@@ -56,6 +56,7 @@ def main():
     dim_char_enc = 300
     dim_gen = 300
     dim_dis = 300
+    dim_action = 263  # HumanML3D标准版维度
     batch_size = 32
     dim_random = 10
     action_steps = 32
@@ -76,6 +77,7 @@ def main():
     print(f"  dim_char_enc: {dim_char_enc}")
     print(f"  dim_gen: {dim_gen}")
     print(f"  dim_dis: {dim_dis}")
+    print(f"  dim_action: {dim_action}")
     print(f"  batch_size: {batch_size}")
     print(f"  dim_random: {dim_random}")
     print(f"  action_steps: {action_steps}")
@@ -92,7 +94,8 @@ def main():
         dim_char_enc=dim_char_enc,
         dim_gen=dim_gen,
         dim_dis=dim_dis,
-        dim_random=dim_random  # 添加dim_random参数
+        dim_action=dim_action,
+        dim_random=dim_random
     )
 
     print(f"模型参数数量: {sum(p.numel() for p in model.parameters()):,}")
@@ -124,6 +127,7 @@ def main():
         dim_char_enc=dim_char_enc,
         dim_gen=dim_gen,
         dim_random=dim_random,
+        dim_action=dim_action,
         restore=restore,
         restore_path=restore_path,
         restore_step=restore_step,

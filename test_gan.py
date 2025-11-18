@@ -23,13 +23,13 @@ class GANTester:
 
     def __init__(self, model, init_pose, model_path,
                  sentence_steps, action_steps, dim_sentence,
-                 dim_char_enc, dim_gen, dim_random,
+                 dim_char_enc, dim_gen, dim_random, dim_action=263,
                  device='cuda', use_random_noise=False):
         self.device = torch.device(device if torch.cuda.is_available() else 'cpu')
 
         self.model = model.to(self.device)
         self.action_steps = action_steps
-        self.dim_action = 24
+        self.dim_action = dim_action  # 支持可配置的动作维度，默认263（HumanML3D标准版）
         self.num_data = 1  # 测试时batch_size=1
 
         self.init_pose = init_pose
@@ -186,6 +186,7 @@ def main():
     dim_char_enc = 300
     dim_gen = 300
     dim_dis = 300
+    dim_action = 263  # HumanML3D标准版维度
     dim_random = 10
 
     # 路径
@@ -229,6 +230,7 @@ def main():
         dim_char_enc=dim_char_enc,
         dim_gen=dim_gen,
         dim_dis=dim_dis,
+        dim_action=dim_action,
         dim_random=dim_random
     )
 
@@ -246,6 +248,7 @@ def main():
         dim_char_enc=dim_char_enc,
         dim_gen=dim_gen,
         dim_random=dim_random,
+        dim_action=dim_action,
         device=device,
         use_random_noise=use_random_noise
     )

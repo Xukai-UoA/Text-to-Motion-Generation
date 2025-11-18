@@ -84,11 +84,11 @@ class GANModel(nn.Module):
     GAN model for Text2Action
     对应TensorFlow版本的GAN_model类
     """
-    def __init__(self, sentence_steps, action_steps, dim_sentence, dim_char_enc, dim_gen, dim_dis, dim_random=10):
+    def __init__(self, sentence_steps, action_steps, dim_sentence, dim_char_enc, dim_gen, dim_dis, dim_action=263, dim_random=10):
         super(GANModel, self).__init__()
 
         self.action_steps = action_steps
-        self.dim_action = 24
+        self.dim_action = dim_action  # 支持可配置的动作维度，默认263（HumanML3D标准版）
         self.stddev = 0.01
 
         self.sentence_steps = sentence_steps
@@ -300,6 +300,7 @@ if __name__ == "__main__":
     dim_char_enc = 300
     dim_gen = 300
     dim_dis = 300
+    dim_action = 263  # HumanML3D标准版维度
     dim_random = 10
 
     model = GANModel(
@@ -309,14 +310,15 @@ if __name__ == "__main__":
         dim_char_enc=dim_char_enc,
         dim_gen=dim_gen,
         dim_dis=dim_dis,
+        dim_action=dim_action,
         dim_random=dim_random
     )
 
     # 创建测试数据
     script = torch.randn(batch_size, sentence_steps, dim_sentence)
     seq_len = torch.tensor([25, 28, 30, 22])
-    real_action = torch.randn(batch_size, action_steps, 24)
-    init_action = torch.randn(batch_size, 24)
+    real_action = torch.randn(batch_size, action_steps, dim_action)
+    init_action = torch.randn(batch_size, dim_action)
     random_noise = torch.randn(batch_size, sentence_steps, dim_random)
 
     # 测试

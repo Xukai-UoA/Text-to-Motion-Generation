@@ -17,14 +17,14 @@ class GANTrainer:
     def __init__(self, gan_model, train_script, train_script_len, train_action, init_pose,
                  num_data, batch_size, gan_model_dir, seq2seq_model_dir, dis_model_dir,
                  sentence_steps, action_steps, dim_sentence, dim_char_enc, dim_gen, dim_random,
-                 restore=0, restore_path='', restore_step=0,
+                 dim_action=263, restore=0, restore_path='', restore_step=0,
                  max_epoch=500, save_stride=5, gen_learning_rate=0.000002, dis_learning_rate=0.000002,
                  device='cuda'):
 
         self.device = torch.device(device if torch.cuda.is_available() else 'cpu')
 
         self.action_steps = action_steps
-        self.dim_action = 24
+        self.dim_action = dim_action  # 支持可配置的动作维度，默认263（HumanML3D标准版）
 
         self.gan_model = gan_model.to(self.device)
 
@@ -251,6 +251,7 @@ if __name__ == "__main__":
     dim_char_enc = 300
     dim_gen = 300
     dim_dis = 300
+    dim_action = 263  # HumanML3D标准版维度
     dim_random = 10
     batch_size = 32
 
@@ -258,8 +259,8 @@ if __name__ == "__main__":
     num_data = 1000
     train_script = np.random.randn(num_data, dim_sentence, sentence_steps).astype(np.float32)
     train_script_len = np.random.randint(10, sentence_steps, size=(num_data,))
-    train_action = np.random.randn(num_data, 24, action_steps).astype(np.float32)
-    init_pose = np.random.randn(24, 1).astype(np.float32)
+    train_action = np.random.randn(num_data, dim_action, action_steps).astype(np.float32)
+    init_pose = np.random.randn(dim_action, 1).astype(np.float32)
 
     # 创建模型
     model = GANModel(
@@ -269,6 +270,7 @@ if __name__ == "__main__":
         dim_char_enc=dim_char_enc,
         dim_gen=dim_gen,
         dim_dis=dim_dis,
+        dim_action=dim_action,
         dim_random=dim_random
     )
 
@@ -290,6 +292,7 @@ if __name__ == "__main__":
         dim_char_enc=dim_char_enc,
         dim_gen=dim_gen,
         dim_random=dim_random,
+        dim_action=dim_action,
         max_epoch=5,  # 测试用小epoch
         save_stride=2,
         gen_learning_rate=0.000002,
